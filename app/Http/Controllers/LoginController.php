@@ -174,6 +174,7 @@ class LoginController extends Controller
             '26011011232',
             '2407830869',
             '2408850911',
+            '12345678903'
         ])) {
             return back()->withErrors([
                 'nip' => 'Anda tidak memiliki akses.',
