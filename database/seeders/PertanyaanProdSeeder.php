@@ -101,10 +101,12 @@ class PertanyaanProdSeeder extends Seeder
             [
                 'category' => 'melakukan',
                 'type' => 'multiselect-description',
-                'list_jawaban' => json_encode(['Kebutuhan keuangan',
+                'list_jawaban' => json_encode([
+                    'Kebutuhan keuangan',
                     'Utang atau pinjaman daring (Pinjol/Judol)',
                     'Diajak atau diarahkan pihak lain',
-                    'Tekanan dari pihak tertentu']),
+                    'Tekanan dari pihak tertentu'
+                ]),
                 'need_description_on' => '',
                 'desciption_hint' => 'Alasan lainnya:',
                 'pertanyaan' => 'Apa alasan Anda melakukan tindakan tersebut?',
@@ -154,9 +156,11 @@ class PertanyaanProdSeeder extends Seeder
             [
                 'category' => 'melakukan',
                 'type' => 'select-description',
-                'list_jawaban' => json_encode(['Ya',
+                'list_jawaban' => json_encode([
+                    'Ya',
                     'Tidak',
-                    'Tidak ingat.']),
+                    'Tidak ingat.'
+                ]),
                 'need_description_on' => 'Ya',
                 'desciption_hint' => 'Dompet digital apa yang paling sering Anda pakai?',
                 'pertanyaan' => 'Apakah hasil tersebut dibagi dengan pihak lain?',
@@ -166,10 +170,12 @@ class PertanyaanProdSeeder extends Seeder
             [
                 'category' => 'melakukan',
                 'type' => 'select-description',
-                'list_jawaban' => json_encode(['Ya',
+                'list_jawaban' => json_encode([
+                    'Ya',
                     'Tidak',
                     'Tidak dapat memastikan',
-                    'Tidak ingat.']),
+                    'Tidak ingat.'
+                ]),
                 'need_description_on' => 'Ya',
                 'desciption_hint' => 'Jika “Ya”, jelaskan:
                     Apa yang diketahui ATL?
@@ -182,10 +188,12 @@ class PertanyaanProdSeeder extends Seeder
             [
                 'category' => 'melakukan',
                 'type' => 'select-description',
-                'list_jawaban' => json_encode(['Ya',
+                'list_jawaban' => json_encode([
+                    'Ya',
                     'Tidak',
                     'Tidak dapat memastikan',
-                    'Tidak ingat.']),
+                    'Tidak ingat.'
+                ]),
                 'need_description_on' => 'Ya',
                 'desciption_hint' => 'Jika “Ya”:
                     Nama/Jabatan/Bentuk pengetahuan atau keterlibatan/Dasar Keterangan',
@@ -196,15 +204,96 @@ class PertanyaanProdSeeder extends Seeder
             [
                 'category' => 'melakukan',
                 'type' => 'select-description',
-                'list_jawaban' => json_encode(['Ya',
+                'list_jawaban' => json_encode([
+                    'Ya',
                     'Tidak',
                     'Tidak dapat memastikan',
-                    'Tidak ingat.']),
+                    'Tidak ingat.'
+                ]),
                 'need_description_on' => 'Ya',
                 'desciption_hint' => 'Jika “Ya”:
                     Jenis informasi atau bukti/Siapa yang menguasainya/Lokasi penyimpanan/Keterangan
                     tambahan.',
                 'pertanyaan' => 'Apakah masih terdapat informasi atau bukti yang berkaitan dengan tindakan tersebut?',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'category' => 'mengetahui1',
+                'type' => 'essay',
+                'list_jawaban' => json_encode([]),
+                'need_description_on' => '',
+                'desciption_hint' => 'Ceritakan secara singkat tindakan atau kejadian yang Anda ketahui.',
+                'pertanyaan' => 'Apa tindakan atau kejadian yang Anda ketahui?',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'category' => 'mengetahui1',
+                'type' => 'essay',
+                'list_jawaban' => json_encode([]),
+                'need_description_on' => '',
+                'desciption_hint' => "Kapan Anda mulai mengetahuinya?\nKapan kejadian tersebut berlangsung?\nDi mana kejadian tersebut berlangsung?\nApakah terjadi satu kali atau berulang?",
+                'pertanyaan' => 'Kapan dan di mana kejadian tersebut terjadi?',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'category' => 'mengetahui1',
+                'type' => 'essay',
+                'list_jawaban' => json_encode([]),
+                'need_description_on' => '',
+                'desciption_hint' => "Sebutkan detail:\n- Nama/Nama Panggilan\n- Peran yang Diketahui\n- Dasar Pengetahuan",
+                'pertanyaan' => 'Siapa saja yang terlibat?',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'category' => 'mengetahui1',
+                'type' => 'essay',
+                'list_jawaban' => json_encode([]),
+                'need_description_on' => '',
+                'desciption_hint' => 'Jelaskan bagaimana tindakan tersebut dilakukan berdasarkan hal yang Anda lihat atau ketahui sendiri.',
+                'pertanyaan' => 'Bagaimana kejadiannya?',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'category' => 'mengetahui1',
+                'type' => 'multiselect-description',
+                'list_jawaban' => json_encode([
+                    'Melihat secara langsung',
+                    'Berada di lokasi kejadian',
+                    'Menemukan barang atau bukti',
+                    'Diberi tahu oleh pihak yang terlibat',
+                ]),
+                'need_description_on' => '',
+                'desciption_hint' => 'Cara lainnya:',
+                'pertanyaan' => 'Bagaimana Anda dapat mengetahui kejadian tersebut?',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'category' => 'mengetahui1',
+                'type' => 'essay',
+                'list_jawaban' => json_encode([]),
+                'need_description_on' => '',
+                'desciption_hint' => "Jelaskan detail:\n- Berapa jumlah barang atau transaksi yang Anda ketahui?\n- Berapa nominal yang Anda ketahui?\n- Dari mana informasi jumlah atau nominal tersebut diperoleh?\n(Tulis 'Tidak mengetahui' jika tidak tahu)",
+                'pertanyaan' => 'Berapa jumlah dan nilai yang Anda ketahui?',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'category' => 'mengetahui1',
+                'type' => 'select-description',
+                'list_jawaban' => json_encode([
+                    'Ya',
+                    'Tidak',
+                    'Tidak ingat',
+                ]),
+                'need_description_on' => 'Ya',
+                'desciption_hint' => "Jika Ya, jelaskan:\n- Kepada siapa\n- Kapan disampaikan\n- Bagaimana responsnya\n\nJika Tidak, jelaskan alasan Anda belum pernah menyampaikannya.",
+                'pertanyaan' => 'Apakah Anda pernah menyampaikan informasi tersebut kepada pihak lain?',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
