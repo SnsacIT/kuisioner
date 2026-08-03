@@ -16,6 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('kuisioner_cabang_id');
             $table->boolean('is_melakukan')->default(false);
             $table->boolean('is_mengetahui')->nullable();
+            $table->boolean('is_mengetahui2')->nullable();
             $table->timestamps();
         });
     }

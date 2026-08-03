@@ -16,6 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('jawaban_id');
             $table->unsignedBigInteger('pertanyaan_id');
             $table->text('jawaban')->nullable();
+            $table->text('description')->nullable();
             $table->timestamps();
         });
     }

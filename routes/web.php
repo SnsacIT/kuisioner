@@ -17,6 +17,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/kuisioner/start', [KuisionerController::class, 'start'])->name('kuisioner.start');
     Route::get('/kuisioner', [KuisionerController::class, 'index'])->name('kuisioner.index');
     Route::post('/kuisioner/cabang', [KuisionerController::class, 'storeCabang'])->name('kuisioner.storeCabang');
+    Route::get('/kuisioner/pertanyaan', [KuisionerController::class, 'pertanyaan'])->name('kuisioner.pertanyaan');
 });
 
 Route::get('/', function () {

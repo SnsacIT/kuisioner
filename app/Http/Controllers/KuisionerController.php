@@ -51,11 +51,17 @@ class KuisionerController extends Controller
             return redirect()->route('rules.index')->with('error', 'Silakan mulai kuisioner dari awal.');
         }
 
+        // Cek apakah sudah mengisi cabang
+        $hasCabang = \App\Models\KuisionerCabang::where('kuisioner_id', session('current_kuisioner_id'))->exists();
+        if ($hasCabang) {
+            return redirect()->route('kuisioner.pertanyaan')->with('info', 'Anda sudah mengisi data cabang. Silakan lanjutkan mengisi pertanyaan.');
+        }
+
         // Mengambil daftar cabang dari database
         $cabangs = \App\Models\DealerCabang::select('id', 'dealer', 'cabang')->orderBy('dealer')->get();
         
         // Mengambil daftar user (untuk mekanik & atl)
-        $users = \App\Models\User::select('id', 'nip', 'nama')->whereNotNull('nip')->whereNotNull('nama')->orderBy('nama')->get();
+        $users = \App\Models\User::select('id', 'nip', 'nama')->whereNotNull('nip')->whereNull('deleted_at')->whereNotNull('nama')->orderBy('nama')->get();
 
         return view('kuisioner.index', compact('cabangs', 'users'));
     }
@@ -105,8 +111,24 @@ class KuisionerController extends Controller
             ]);
         }
 
-        // Sementara redirect kembali ke halaman kuisioner dengan pesan sukses
-        // Nanti akan diubah ke halaman pertanyaan setelah dibuat
-        return redirect()->route('kuisioner.index')->with('success', 'Data cabang berhasil disimpan!');
+        // Redirect ke halaman pengisian pertanyaan
+        return redirect()->route('kuisioner.pertanyaan')->with('success', 'Data cabang berhasil disimpan, silakan lanjut mengisi pertanyaan!');
+    }
+
+    /**
+     * Menampilkan halaman pengisian pertanyaan
+     */
+    public function pertanyaan()
+    {
+        if (!session()->has('current_kuisioner_id')) {
+            return redirect()->route('rules.index')->with('error', 'Silakan mulai kuisioner dari awal.');
+        }
+
+        $hasCabang = \App\Models\KuisionerCabang::where('kuisioner_id', session('current_kuisioner_id'))->exists();
+        if (!$hasCabang) {
+            return redirect()->route('kuisioner.index')->with('error', 'Silakan isi data cabang terlebih dahulu.');
+        }
+
+        return view('kuisioner.pertanyaan');
     }
 }

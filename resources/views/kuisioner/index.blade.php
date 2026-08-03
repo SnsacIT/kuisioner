@@ -186,6 +186,13 @@ $(document).ready(function() {
     });
 });
 </script>
-<!-- Tambahkan script SweetAlert2 via CDN -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    // Memaksa reload jika halaman dimuat dari cache (saat user tekan tombol Back)
+    window.addEventListener("pageshow", function (event) {
+        if (event.persisted) {
+            window.location.reload();
+        }
+    });
+</script>
 @endpush

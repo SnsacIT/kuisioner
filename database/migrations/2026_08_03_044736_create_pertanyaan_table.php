@@ -14,6 +14,10 @@ return new class extends Migration
         Schema::create('pertanyaan', function (Blueprint $table) {
             $table->id();
             $table->string('category');
+            $table->string('type');
+            $table->string('list_jawaban');
+            $table->string('need_description_on');
+            $table->string('desciption_hint');
             $table->text('pertanyaan'); // menggunakan text agar bisa menampung pertanyaan yang panjang
             $table->timestamps();
         });
