@@ -60,7 +60,7 @@ class KuisionerController extends Controller
         }
 
         // Mengambil daftar cabang dari database
-        $cabangs = \App\Models\DealerCabang::select('id', 'dealer', 'cabang')->where('via_ans','!=', 'PT KAS')->orderBy('dealer')->get();
+        $cabangs = \App\Models\DealerCabang::select('id', 'dealer', 'cabang')->whereNull('kode_kas')->orderBy('dealer')->get();
         
         // Mengambil daftar user (untuk mekanik & atl)
         $users = \App\Models\User::select('id', 'nip', 'nama')->whereNotNull('nip')->whereNull('delete_at')->whereNotNull('nama')->orderBy('nama')->get();
@@ -121,7 +121,7 @@ class KuisionerController extends Controller
             return redirect()->route('rules.index')->with('error', 'Sesi Anda telah kedaluwarsa atau tidak valid. Silakan mulai ulang.');
         }
 
-        $cabangs = \App\Models\DealerCabang::select('id', 'dealer', 'cabang')->where('via_ans','!=', 'PT KAS')->orderBy('dealer')->get();
+        $cabangs = \App\Models\DealerCabang::select('id', 'dealer', 'cabang')->whereNull('kode_kas')->orderBy('dealer')->get();
         $users = \App\Models\User::select('id', 'nip', 'nama')->whereNotNull('nip')->whereNull('delete_at')->whereNotNull('nama')->orderBy('nama')->get();
         
         $currentCabang = \App\Models\KuisionerCabang::with('dealerCabang')
