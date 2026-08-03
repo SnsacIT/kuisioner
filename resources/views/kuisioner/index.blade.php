@@ -20,7 +20,7 @@
                                             <select class="form-select select2-dynamic" name="dealercabang_id" data-placeholder="Ketik untuk mencari cabang..." required>
                                                 <option value=""></option>
                                                 @foreach($cabangs as $cabang)
-                                                    <option value="{{ $cabang->id }}">{{ $cabang->dealer }} - {{ $cabang->cabang }}</option>
+                                                    <option value="{{ $cabang->id }}">{{ $cabang->nama_dealer}} </option>
                                                 @endforeach
                                             </select>
                                         </div>
