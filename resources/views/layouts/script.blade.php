@@ -291,4 +291,60 @@
         $(this).find('form').trigger('reset');
       });
     });
+
+    // --- Anti-Screenshot & Content Protection (Hanya untuk Halaman Kuisioner) ---
+    if (window.location.pathname.includes('/kuisioner')) {
+        // 1. Matikan Klik Kanan
+        document.addEventListener('contextmenu', e => e.preventDefault());
+
+        // 2. Cegat Tombol Print Screen & Copy
+        document.addEventListener('keyup', (e) => {
+            if (e.key === 'PrintScreen') {
+                navigator.clipboard.writeText(''); 
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Dilarang Screenshot!',
+                    text: 'Mengambil screenshot pada halaman ini tidak diperbolehkan.',
+                    confirmButtonColor: '#d33'
+                });
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            // Blokir Ctrl+P (Print), Ctrl+S (Save), Ctrl+C (Copy)
+            if (e.ctrlKey && (e.key === 'p' || e.key === 's' || e.key === 'c')) {
+                e.preventDefault();
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Aksi Dilarang!',
+                    text: 'Mencetak atau menyalin halaman ini tidak diperbolehkan.',
+                    confirmButtonColor: '#d33'
+                });
+            }
+        });
+
+        // 3. Efek Layar Hitam (Blur) saat kehilangan fokus (Snipping Tool / Ganti Aplikasi)
+        window.addEventListener('blur', function() {
+            document.body.style.filter = "blur(15px)";
+            document.body.style.opacity = "0.05";
+            document.body.style.transition = "all 0.1s ease";
+        });
+        
+        window.addEventListener('focus', function() {
+            document.body.style.filter = "none";
+            document.body.style.opacity = "1";
+        });
+
+        // 4. Mencegah seleksi teks (CSS Inline Injector)
+        let style = document.createElement('style');
+        style.innerHTML = `
+            body {
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+            }
+        `;
+        document.head.appendChild(style);
+    }
   </script>

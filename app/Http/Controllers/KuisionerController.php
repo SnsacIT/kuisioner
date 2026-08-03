@@ -46,9 +46,11 @@ class KuisionerController extends Controller
      */
     public function index()
     {
-        // Pastikan ada session kuisioner yang aktif, jika tidak, tendang balik ke halaman aturan
-        if (!session()->has('current_kuisioner_id')) {
-            return redirect()->route('rules.index')->with('error', 'Silakan mulai kuisioner dari awal.');
+        // Pastikan ada session kuisioner yang aktif dan valid di DB
+        $kuisionerId = session('current_kuisioner_id');
+        if (!$kuisionerId || !\App\Models\Kuisioner::find($kuisionerId)) {
+            session()->forget('current_kuisioner_id');
+            return redirect()->route('rules.index')->with('error', 'Sesi Anda telah kedaluwarsa atau tidak valid. Silakan mulai ulang.');
         }
 
         // Cek apakah sudah mengisi cabang
@@ -61,7 +63,7 @@ class KuisionerController extends Controller
         $cabangs = \App\Models\DealerCabang::select('id', 'dealer', 'cabang')->orderBy('dealer')->get();
         
         // Mengambil daftar user (untuk mekanik & atl)
-        $users = \App\Models\User::select('id', 'nip', 'nama')->whereNotNull('nip')->whereNull('deleted_at')->whereNotNull('nama')->orderBy('nama')->get();
+        $users = \App\Models\User::select('id', 'nip', 'nama')->whereNotNull('nip')->whereNull('delete_at')->whereNotNull('nama')->orderBy('nama')->get();
 
         return view('kuisioner.index', compact('cabangs', 'users'));
     }
@@ -71,9 +73,11 @@ class KuisionerController extends Controller
      */
     public function storeCabang(Request $request)
     {
-        // Pastikan session kuisioner aktif
-        if (!session()->has('current_kuisioner_id')) {
-            return redirect()->route('rules.index')->with('error', 'Silakan mulai kuisioner dari awal.');
+        // Pastikan session kuisioner aktif dan valid di DB
+        $kuisionerId = session('current_kuisioner_id');
+        if (!$kuisionerId || !\App\Models\Kuisioner::find($kuisionerId)) {
+            session()->forget('current_kuisioner_id');
+            return redirect()->route('rules.index')->with('error', 'Sesi Anda telah kedaluwarsa atau tidak valid. Silakan mulai ulang.');
         }
 
         // Validasi input
@@ -120,8 +124,11 @@ class KuisionerController extends Controller
      */
     public function pertanyaan()
     {
-        if (!session()->has('current_kuisioner_id')) {
-            return redirect()->route('rules.index')->with('error', 'Silakan mulai kuisioner dari awal.');
+        // Pastikan session kuisioner aktif dan valid di DB
+        $kuisionerId = session('current_kuisioner_id');
+        if (!$kuisionerId || !\App\Models\Kuisioner::find($kuisionerId)) {
+            session()->forget('current_kuisioner_id');
+            return redirect()->route('rules.index')->with('error', 'Sesi Anda telah kedaluwarsa atau tidak valid. Silakan mulai ulang.');
         }
 
         $hasCabang = \App\Models\KuisionerCabang::where('kuisioner_id', session('current_kuisioner_id'))->exists();
