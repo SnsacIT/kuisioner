@@ -13,12 +13,13 @@ return new class extends Migration
     {
         Schema::create('kuisioner_cabang', function (Blueprint $table) {
             $table->id();
+            $table->string('category')->nullable();
             $table->unsignedBigInteger('kuisioner_id');
             $table->unsignedBigInteger('dealercabang_id');
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
             $table->string('mess')->nullable();
-            $table->json('mekanik')->nullable(); // Untuk menyimpan array of string
+            $table->string('mekanik')->nullable();
             $table->string('atl')->nullable();
             $table->timestamps();
         });

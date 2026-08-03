@@ -24,7 +24,6 @@ class KuisionerCabang extends Model
     protected $casts = [
         'start_date' => 'date',
         'end_date' => 'date',
-        'mekanik' => 'array',
     ];
 
     public function kuisioner()
@@ -35,5 +34,10 @@ class KuisionerCabang extends Model
     public function jawaban()
     {
         return $this->hasOne(KuisionerJawaban::class, 'kuisioner_cabang_id');
+    }
+
+    public function dealerCabang()
+    {
+        return $this->belongsTo(DealerCabang::class, 'dealercabang_id');
     }
 }

@@ -17,6 +17,7 @@ class Kuisioner extends Model
         'confirm_statement',
         'is_bersalah',
         'signature',
+        'saran_perbaikan',
     ];
 
     protected $casts = [

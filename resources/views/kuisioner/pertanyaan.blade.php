@@ -15,29 +15,117 @@
                                 @csrf
                                 
                                 {{-- Penanda Progress --}}
-                                <div class="mb-3 text-end text-muted small fw-bold">
-                                    Soal <span id="currentStepIndicator">1</span> dari {{ count($pertanyaans) }}
+                                <div class="mb-3 d-flex justify-content-between align-items-center text-muted small fw-bold" id="progressIndicatorBox">
+                                    <span id="currentCabangIndicator" class="badge bg-warning text-dark px-3 py-2 rounded-pill shadow-sm"></span>
+                                    <span>Tahap <span id="currentStepIndicator">1</span> dari <span id="totalStepIndicator">-</span></span>
                                 </div>
 
-                                @foreach($pertanyaans as $index => $q)
-                                <div class="question-step d-none" id="step-{{ $index + 1 }}" data-qid="{{ $q->id }}" data-type="{{ $q->type }}">
+                                @foreach($kuisionerCabangs as $cabang)
+                                
+                                {{-- HIDDEN INPUTS UNTUK FLAG BRANCHING PER CABANG --}}
+                                <input type="hidden" name="is_melakukan[{{ $cabang->id }}]" id="is_melakukan_{{ $cabang->id }}" value="">
+                                <input type="hidden" name="is_mengetahui[{{ $cabang->id }}]" id="is_mengetahui_{{ $cabang->id }}" value="">
+                                <input type="hidden" name="is_mengetahui2[{{ $cabang->id }}]" id="is_mengetahui2_{{ $cabang->id }}" value="">
+
+                                {{-- STEP: UTAMA 1 --}}
+                                <div class="question-step d-none" id="step_cabang_{{ $cabang->id }}_utama1" data-cid="{{ $cabang->id }}" data-type="utama1">
                                     <div class="card shadow-sm border-0 mb-4 bg-light">
                                         <div class="card-header bg-white border-bottom-0 pt-3 pb-0">
-                                            <span class="badge bg-secondary mb-2">{{ $q->category }}</span>
-                                            <span class="badge bg-info mb-2 ms-1">Type: {{ $q->type }}</span>
-                                            <h6 class="fw-bold mb-0">{{ $index + 1 }}. {{ $q->pertanyaan }}</h6>
+                                            <span class="badge bg-primary mb-2">Pertanyaan Utama</span>
+                                            <span class="badge bg-outline-secondary text-secondary mb-2 ms-1 border">Cabang: {{ $cabang->dealerCabang->cabang }}</span>
+                                            <h6 class="fw-bold mb-0">1. Selama bekerja di cabang ini pada periode tersebut, apakah Anda pernah melakukan, membantu, atau terlibat dalam tindakan yang tidak sesuai dengan prosedur atau peraturan perusahaan?</h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="d-flex flex-column gap-2">
+                                                <div class="form-check">
+                                                    <input class="form-check-input trigger-utama1" type="radio" name="utama1[{{ $cabang->id }}]" id="c{{ $cabang->id }}_u1_ans1" value="Ya" data-cid="{{ $cabang->id }}">
+                                                    <label class="form-check-label" for="c{{ $cabang->id }}_u1_ans1">Ya, pernah melakukan atau terlibat</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input trigger-utama1" type="radio" name="utama1[{{ $cabang->id }}]" id="c{{ $cabang->id }}_u1_ans2" value="Tidak" data-cid="{{ $cabang->id }}">
+                                                    <label class="form-check-label" for="c{{ $cabang->id }}_u1_ans2">Tidak pernah melakukan atau terlibat</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input trigger-utama1" type="radio" name="utama1[{{ $cabang->id }}]" id="c{{ $cabang->id }}_u1_ans3" value="Info" data-cid="{{ $cabang->id }}">
+                                                    <label class="form-check-label" for="c{{ $cabang->id }}_u1_ans3">Saya membutuhkan penjelasan mengenai tindakan yang dimaksud</label>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="mt-3 description-area d-none" id="desc_area_cabang_{{ $cabang->id }}_utama1">
+                                                <div class="alert alert-info small mb-0 border-0 shadow-sm">
+                                                    <strong><i class="bi bi-info-circle me-1"></i> Penjelasan Tindakan:</strong><br>
+                                                    <div class="mt-1 text-dark" style="white-space: pre-wrap;">Tindakan yang dimaksud meliputi:
+• Menjual atau menyerahkan Freon
+• Menjual, mengambil, atau menyerahkan oli
+• Menjual, mengambil, atau menyerahkan material/suku cadang
+• Melakukan pekerjaan tanpa Work Order
+• Melakukan pekerjaan di luar prosedur perusahaan
+• Menerima pembayaran langsung dari pelanggan atau pihak dealer
+• Mengumpulkan barang atau hasil dari mekanik lain
+• Membantu pihak lain melakukan tindakan tersebut
+• Mengajak, mengarahkan, menyuruh, atau mengajari pihak lain
+• Menyembunyikan atau mengubah informasi pekerjaan</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {{-- STEP: UTAMA 2 --}}
+                                <div class="question-step d-none" id="step_cabang_{{ $cabang->id }}_utama2" data-cid="{{ $cabang->id }}" data-type="utama2">
+                                    <div class="card shadow-sm border-0 mb-4 bg-light">
+                                        <div class="card-header bg-white border-bottom-0 pt-3 pb-0">
+                                            <span class="badge bg-primary mb-2">Pertanyaan Utama Lanjutan</span>
+                                            <span class="badge bg-outline-secondary text-secondary mb-2 ms-1 border">Cabang: {{ $cabang->dealerCabang->cabang }}</span>
+                                            <h6 class="fw-bold mb-0">2. Selama bekerja di cabang ini, apakah Anda pernah mengetahui, melihat, atau menerima informasi mengenai tindakan yang tidak sesuai dengan prosedur atau peraturan perusahaan?</h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="d-flex flex-column gap-2">
+                                                <div class="form-check">
+                                                    <input class="form-check-input trigger-utama2" type="radio" name="utama2[{{ $cabang->id }}]" id="c{{ $cabang->id }}_u2_ans1" value="Langsung" data-cid="{{ $cabang->id }}">
+                                                    <label class="form-check-label" for="c{{ $cabang->id }}_u2_ans1">Ya, mengetahui atau melihat secara langsung</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input trigger-utama2" type="radio" name="utama2[{{ $cabang->id }}]" id="c{{ $cabang->id }}_u2_ans2" value="Mendengar" data-cid="{{ $cabang->id }}">
+                                                    <label class="form-check-label" for="c{{ $cabang->id }}_u2_ans2">Ya, pernah mendengar dari pihak lain</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input trigger-utama2" type="radio" name="utama2[{{ $cabang->id }}]" id="c{{ $cabang->id }}_u2_ans3" value="Tidak" data-cid="{{ $cabang->id }}">
+                                                    <label class="form-check-label" for="c{{ $cabang->id }}_u2_ans3">Tidak mengetahui</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {{-- STEPS: DYNAMIC KRONOLOGI PER CABANG --}}
+                                @foreach($pertanyaans as $index => $q)
+                                @if(in_array($q->category, ['utama1', 'utama2'])) @continue @endif
+                                <div class="question-step d-none" id="step_cabang_{{ $cabang->id }}_dyn_{{ $q->id }}" data-cid="{{ $cabang->id }}" data-qid="{{ $q->id }}" data-type="{{ $q->type }}">
+                                    <div class="card shadow-sm border-0 mb-4 bg-light">
+                                        <div class="card-header bg-white border-bottom-0 pt-3 pb-0">
+                                            <span class="badge bg-secondary mb-2">
+                                                @if($q->category == 'melakukan') Kronologi (Bagian D)
+                                                @elseif($q->category == 'mengetahui1') Kronologi Mengetahui Langsung (Bagian E1)
+                                                @elseif($q->category == 'mengetahui2') Kronologi Mendengar (Bagian E2)
+                                                @endif
+                                            </span>
+                                            <span class="badge bg-outline-secondary text-secondary mb-2 ms-1 border">Cabang: {{ $cabang->dealerCabang->cabang }}</span>
+                                            <h6 class="fw-bold mb-0">
+                                                Pertanyaan Kronologi: {{ $q->pertanyaan }}
+                                            </h6>
                                         </div>
                                         <div class="card-body">
                                             @php
                                                 $opsi = json_decode($q->list_jawaban, true) ?? [];
                                             @endphp
                                             
-                                            @if($q->type == 'select-description' && count($opsi) > 0)
+                                            @if(in_array($q->type, ['select', 'select-description', 'select-info']) && count($opsi) > 0)
                                                 <div class="d-flex flex-column gap-2">
                                                     @foreach($opsi as $jawaban)
                                                     <div class="form-check">
-                                                        <input class="form-check-input check-input-trigger" type="radio" name="jawaban[{{ $q->id }}]" id="q{{ $q->id }}_ans{{ $loop->index }}" value="{{ $jawaban }}" data-qid="{{ $q->id }}">
-                                                        <label class="form-check-label" for="q{{ $q->id }}_ans{{ $loop->index }}">
+                                                        <input class="form-check-input check-input-trigger" type="radio" name="jawaban[{{ $cabang->id }}][{{ $q->id }}]" id="c{{ $cabang->id }}_q{{ $q->id }}_ans{{ $loop->index }}" value="{{ $jawaban }}" data-cid="{{ $cabang->id }}" data-qid="{{ $q->id }}">
+                                                        <label class="form-check-label" for="c{{ $cabang->id }}_q{{ $q->id }}_ans{{ $loop->index }}">
                                                             {{ $jawaban }}
                                                         </label>
                                                     </div>
@@ -47,28 +135,89 @@
                                                 <div class="d-flex flex-column gap-2">
                                                     @foreach($opsi as $jawaban)
                                                     <div class="form-check">
-                                                        <input class="form-check-input check-input-trigger" type="checkbox" name="jawaban[{{ $q->id }}][]" id="q{{ $q->id }}_ans{{ $loop->index }}" value="{{ $jawaban }}" data-qid="{{ $q->id }}">
-                                                        <label class="form-check-label" for="q{{ $q->id }}_ans{{ $loop->index }}">
+                                                        <input class="form-check-input check-input-trigger" type="checkbox" name="jawaban[{{ $cabang->id }}][{{ $q->id }}][]" id="c{{ $cabang->id }}_q{{ $q->id }}_ans{{ $loop->index }}" value="{{ $jawaban }}" data-cid="{{ $cabang->id }}" data-qid="{{ $q->id }}">
+                                                        <label class="form-check-label" for="c{{ $cabang->id }}_q{{ $q->id }}_ans{{ $loop->index }}">
                                                             {{ $jawaban }}
                                                         </label>
                                                     </div>
                                                     @endforeach
                                                 </div>
                                             @elseif($q->type == 'essay')
-                                                <textarea class="form-control req-input" name="jawaban[{{ $q->id }}]" rows="3" placeholder="{{ $q->desciption_hint }}"></textarea>
+                                                <textarea class="form-control req-input" name="jawaban[{{ $cabang->id }}][{{ $q->id }}]" rows="3" placeholder="{{ $q->desciption_hint }}"></textarea>
                                             @endif
                                             
-                                            {{-- Area deskripsi (default hidden) --}}
-                                            @if($q->need_description_on)
-                                            <div class="mt-3 description-area d-none" id="desc_area_{{ $q->id }}">
-                                                <label class="form-label text-muted small fw-bold"><i class="bi bi-info-circle me-1"></i>Keterangan Tambahan</label>
-                                                <textarea class="form-control" name="deskripsi[{{ $q->id }}]" rows="2" placeholder="{{ $q->desciption_hint }}"></textarea>
+                                            {{-- Area deskripsi (default hidden unless *) --}}
+                                            @php 
+                                                $isAlwaysShow = false;
+                                                if ($q->need_description_on === '*') {
+                                                    $isAlwaysShow = true;
+                                                } else if (empty($q->need_description_on) && in_array($q->type, ['select-description', 'multiselect-description'])) {
+                                                    $isAlwaysShow = true;
+                                                }
+                                            @endphp
+
+                                            @if($q->need_description_on || $isAlwaysShow)
+                                            <div class="mt-3 description-area {{ $isAlwaysShow ? '' : 'd-none' }}" id="desc_area_cabang_{{ $cabang->id }}_{{ $q->id }}">
+                                                @if($q->type == 'select-info')
+                                                    <div class="alert alert-info small mb-0 border-0 shadow-sm">
+                                                        <strong><i class="bi bi-info-circle me-1"></i> Penjelasan Tambahan:</strong><br>
+                                                        <div class="mt-1 text-dark" style="white-space: pre-wrap;">{{ $q->desciption_hint }}</div>
+                                                    </div>
+                                                @else
+                                                    <label class="form-label text-muted small fw-bold"><i class="bi bi-info-circle me-1"></i>Keterangan Tambahan {{ $q->type === 'multiselect-description' ? '(Opsional)' : '' }}</label>
+                                                    <textarea class="form-control" name="deskripsi[{{ $cabang->id }}][{{ $q->id }}]" rows="2" placeholder="{{ $q->desciption_hint }}"></textarea>
+                                                @endif
                                             </div>
                                             @endif
                                         </div>
                                     </div>
                                 </div>
                                 @endforeach
+                                
+                                {{-- STEP: KONFIRMASI CABANG --}}
+                                <div class="question-step d-none" id="step_cabang_{{ $cabang->id }}_konfirmasi" data-cid="{{ $cabang->id }}" data-type="konfirmasi">
+                                    <div class="card shadow-sm border-0 mb-4 bg-light">
+                                        <div class="card-body text-center py-5">
+                                            <i class="bi bi-check2-circle text-primary" style="font-size: 3rem;"></i>
+                                            <h5 class="fw-bold mt-3">Konfirmasi Jawaban Cabang</h5>
+                                            <p class="text-muted">Anda telah menyelesaikan pertanyaan untuk cabang <strong>{{ $cabang->dealerCabang->cabang }}</strong>.</p>
+                                            <div class="mt-4 p-3 bg-white border rounded shadow-sm d-inline-block text-start">
+                                                <div class="form-check mb-0">
+                                                    <input class="form-check-input" type="checkbox" id="c{{ $cabang->id }}_konfirmasi_check" data-cid="{{ $cabang->id }}">
+                                                    <label class="form-check-label text-dark fw-semibold" for="c{{ $cabang->id }}_konfirmasi_check">
+                                                        Saya menyatakan bahwa jawaban untuk cabang ini sudah benar.
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="mt-4">
+                                                <button type="button" class="btn btn-success btn-lg px-4 rounded-pill shadow-sm" id="btnSaveCabang_{{ $cabang->id }}" onclick="saveCabang({{ $cabang->id }})">
+                                                    <i class="bi bi-save me-2"></i> Simpan & Kunci Jawaban Cabang Ini
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                @endforeach
+
+                                {{-- STEP: SUBMIT SCREEN --}}
+                                <div class="question-step d-none" id="step_submit" data-type="submit">
+                                    <div class="card shadow-sm border-0 mb-4 bg-light">
+                                        <div class="card-header bg-white border-bottom-0 pt-4 pb-2 text-start">
+                                            <span class="badge bg-success mb-2"><i class="bi bi-stars"></i> Penyelesaian Formulir</span>
+                                            <h6 class="fw-bold mb-0 lh-base">Berdasarkan pengalaman dan pengetahuan Anda, apa yang perlu diperbaiki oleh Perusahaan agar pelanggaran serupa tidak terjadi kembali, dan apakah masih ada informasi penting yang belum Anda sampaikan?</h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <textarea class="form-control" name="saran_perbaikan" id="saran_perbaikan" rows="4" placeholder="Tuliskan saran dan perbaikan di sini..."></textarea>
+                                            
+                                            <div class="text-center py-4 border-top mt-4">
+                                                <i class="bi bi-check-circle-fill text-success" style="font-size: 3.5rem;"></i>
+                                                <h4 class="fw-bold mt-3">Formulir Selesai</h4>
+                                                <p class="text-muted">Anda telah menjawab seluruh pertanyaan untuk semua cabang. Pastikan saran Anda telah terisi, lalu klik tombol di bawah untuk mengirimkan kuesioner.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
 
                                 <div class="d-flex flex-column-reverse flex-md-row justify-content-between gap-3 mt-4">
                                     <button type="button" class="btn btn-outline-secondary rounded-pill px-4 fw-bold w-100 w-md-auto" id="btnPrev">
@@ -79,8 +228,9 @@
                                         Selanjutnya <i class="bi bi-arrow-right ms-2"></i>
                                     </button>
                                     
+                                    <!-- Aksi form final sekarang mengarah ke submitAll, bukan hanya aksi # -->
                                     <button type="button" class="btn btn-success rounded-pill px-5 fw-bold shadow-sm d-none w-100 w-md-auto" id="btnSubmitKuisioner">
-                                        <i class="bi bi-send me-2"></i> Submit Kuisioner
+                                        <i class="bi bi-send me-2"></i> Selesaikan Kuesioner
                                     </button>
                                 </div>
                             </form>
@@ -96,95 +246,249 @@
 @push('scripts')
 <script>
     $(document).ready(function() {
-        const totalSteps = {{ count($pertanyaans) }};
-        let currentStep = 1;
+        // ID Lists from Backend
+        const pertanyaansData = @json($pertanyaans);
+        const cabangsData = @json($kuisionerCabangs);
+        
+        const melakukanIds = pertanyaansData.filter(p => p.category === 'melakukan').map(p => p.id);
+        const mengetahui1Ids = pertanyaansData.filter(p => p.category === 'mengetahui1').map(p => p.id);
+        const mengetahui2Ids = pertanyaansData.filter(p => p.category === 'mengetahui2').map(p => p.id);
+        
+        let completedCabangIds = cabangsData.filter(c => c.jawaban !== null).map(c => c.id);
+        
+        let currentFlow = [];
+        let currentIndex = 0;
+        let minAllowedIndex = 0; // Kunci supaya tidak bisa kembali melewati cabang yang sudah di-save
+        
+        const stateKey = 'kuisioner_state_{{ session('current_kuisioner_id') }}';
 
-        // Hash Navigation Logic
-        function renderStep() {
-            let hash = window.location.hash;
-            if (hash && hash.startsWith('#q')) {
-                let step = parseInt(hash.replace('#q', ''));
-                if (step >= 1 && step <= totalSteps) {
-                    currentStep = step;
+        function saveLocalState() {
+            let state = {
+                currentIndex: currentIndex,
+                formData: $('#formKuisioner').serializeArray()
+            };
+            sessionStorage.setItem(stateKey, JSON.stringify(state));
+        }
+
+        function restoreDynamicUI() {
+            $('.trigger-utama1:checked').each(function() {
+                let cid = $(this).data('cid');
+                if ($(this).val() === 'Info') {
+                    $('#desc_area_cabang_' + cid + '_utama1').removeClass('d-none').show();
                 }
+            });
+            
+            $('.check-input-trigger:checked').each(function() {
+                let qid = $(this).data('qid');
+                let cid = $(this).data('cid');
+                let q = pertanyaansData.find(p => p.id == qid);
+                if (q && q.need_description_on) {
+                    let descArea = $('#desc_area_cabang_' + cid + '_' + q.id);
+                    let triggerValues = q.need_description_on.split(',').map(s => s.trim());
+                    if (triggerValues.includes($(this).val())) {
+                        descArea.removeClass('d-none').show();
+                        let descInput = descArea.find('textarea');
+                        if (descInput.length && q.type !== 'multiselect-description') {
+                            descInput.attr('required', true);
+                        }
+                    }
+                }
+            });
+        }
+        function buildFlow() {
+            let newFlow = [];
+            
+            cabangsData.forEach(c => {
+                let cid = c.id;
+                
+                // SKIP jika cabang ini sudah selesai (sudah ada jawaban di database)
+                if (completedCabangIds.includes(cid)) {
+                    return;
+                }
+                
+                newFlow.push('cabang_' + cid + '_utama1');
+                
+                let ans1 = $('input[name="utama1[' + cid + ']"]:checked').val();
+                let ans2 = $('input[name="utama2[' + cid + ']"]:checked').val();
+                
+                if (ans1 === 'Ya') {
+                    $('#is_melakukan_' + cid).val(1);
+                    $('#is_mengetahui_' + cid).val('');
+                    $('#is_mengetahui2_' + cid).val('');
+                    melakukanIds.forEach(id => newFlow.push('cabang_' + cid + '_dyn_' + id));
+                } else if (ans1 === 'Tidak') {
+                    $('#is_melakukan_' + cid).val(0);
+                    newFlow.push('cabang_' + cid + '_utama2');
+                    
+                    if (ans2 === 'Langsung') {
+                        $('#is_mengetahui_' + cid).val(1);
+                        $('#is_mengetahui2_' + cid).val(0);
+                        mengetahui1Ids.forEach(id => newFlow.push('cabang_' + cid + '_dyn_' + id));
+                    } else if (ans2 === 'Mendengar') {
+                        $('#is_mengetahui_' + cid).val(0);
+                        $('#is_mengetahui2_' + cid).val(1);
+                        mengetahui2Ids.forEach(id => newFlow.push('cabang_' + cid + '_dyn_' + id));
+                    } else if (ans2 === 'Tidak') {
+                        $('#is_mengetahui_' + cid).val(0);
+                        $('#is_mengetahui2_' + cid).val(0);
+                    }
+                }
+                
+                // Tambahkan step konfirmasi di akhir setiap cabang
+                newFlow.push('cabang_' + cid + '_konfirmasi');
+            });
+            
+            newFlow.push('submit');
+            currentFlow = newFlow;
+        }
+
+        // Tampilkan Step
+        function renderStep() {
+            buildFlow(); // pastikan flow up to date
+            
+            // Jaga agar currentIndex tidak melebihi panjang array baru (misal user ubah jawaban dari cabang sebelumnya)
+            if (currentIndex >= currentFlow.length) {
+                currentIndex = currentFlow.length - 1;
+            }
+            
+            let currentStepId = currentFlow[currentIndex];
+            
+            $('.question-step').addClass('d-none');
+            let $activeStep = $('#step_' + currentStepId);
+            $activeStep.removeClass('d-none').hide().fadeIn(300);
+
+            // Indikator Progress
+            if (currentStepId === 'submit') {
+                $('#progressIndicatorBox').addClass('d-none');
             } else {
-                currentStep = 1;
-                // history.replaceState(null, null, ' ' + window.location.pathname + '#q1');
+                $('#progressIndicatorBox').removeClass('d-none');
+                $('#currentStepIndicator').text(currentIndex + 1);
+                $('#totalStepIndicator').text(currentFlow.length - 1);
+                
+                // Cari info cabang saat ini dari data-attribute
+                let activeCid = $activeStep.data('cid');
+                if (activeCid) {
+                    let cData = cabangsData.find(c => c.id == activeCid);
+                    if (cData && cData.dealer_cabang) {
+                        $('#currentCabangIndicator').html('<i class="bi bi-shop me-1"></i> ' + cData.dealer_cabang.cabang);
+                    }
+                }
             }
 
-            // Update UI
-            $('#currentStepIndicator').text(currentStep);
-            $('.question-step').addClass('d-none');
-            $('#step-' + currentStep).removeClass('d-none').hide().fadeIn(300);
-
-            // Button visibility
-            if (currentStep === 1) {
-                $('#btnPrev').addClass('invisible'); // hide but keep space
+            // Tombol Prev
+            if (currentIndex <= minAllowedIndex) {
+                $('#btnPrev').addClass('invisible');
             } else {
                 $('#btnPrev').removeClass('invisible');
             }
 
-            if (currentStep === totalSteps) {
+            // Tombol Next & Submit
+            if (currentStepId === 'submit') {
                 $('#btnNext').addClass('d-none');
                 $('#btnSubmitKuisioner').removeClass('d-none');
+            } else if ($activeStep.data('type') === 'konfirmasi') {
+                // Di tahap konfirmasi, Next digantikan oleh tombol Simpan AJAX,
+                // Namun kita perlu pastikan Next disembunyikan.
+                $('#btnNext').addClass('d-none');
+                $('#btnSubmitKuisioner').addClass('d-none');
             } else {
                 $('#btnNext').removeClass('d-none');
                 $('#btnSubmitKuisioner').addClass('d-none');
             }
         }
 
-        // Jalankan saat load & saat hash berubah (tombol Back/Forward browser ditekan)
-        window.addEventListener('hashchange', renderStep);
-        renderStep(); // Init first load
-
-        // Navigasi Next & Prev
-        $('#btnNext').on('click', function() {
-            // Validasi di sini sebelum lanjut
-            if (validateStep(currentStep)) {
-                window.location.hash = 'q' + (currentStep + 1);
+        // Toggle Penjelasan Utama 1 per Cabang
+        $('.trigger-utama1').on('change', function() {
+            let cid = $(this).data('cid');
+            if ($(this).val() === 'Info') {
+                $('#desc_area_cabang_' + cid + '_utama1').removeClass('d-none').hide().fadeIn(300);
+            } else {
+                $('#desc_area_cabang_' + cid + '_utama1').addClass('d-none');
             }
+            buildFlow();
         });
 
-        $('#btnPrev').on('click', function() {
-            window.location.hash = 'q' + (currentStep - 1);
+        // Toggle Utama 2 per Cabang
+        $('.trigger-utama2').on('change', function() {
+            buildFlow();
         });
 
-        // Fungsi Validasi Step saat ini
-        function validateStep(step) {
-            let stepDiv = $('#step-' + step);
-            let qid = stepDiv.data('qid');
-            let type = stepDiv.data('type');
+        // Validasi Step
+        function validateStep(stepId) {
             let isValid = true;
             let errMsg = 'Mohon lengkapi jawaban Anda.';
 
-            if (type === 'select-description' || type === 'radio') {
-                if ($('input[name="jawaban[' + qid + ']"]:checked').length === 0) {
-                    isValid = false;
-                }
-            } else if (type === 'multiselect' || type === 'multiselect-description') {
-                if ($('input[name="jawaban[' + qid + '][]"]:checked').length === 0) {
-                    isValid = false;
-                }
-            } else if (type === 'essay' || type === 'text') {
-                if ($.trim($('textarea[name="jawaban[' + qid + ']"]').val()) === '') {
-                    isValid = false;
-                }
-            }
+            let stepDiv = $('#step_' + stepId);
+            let cid = stepDiv.data('cid');
 
-            // Validasi Keterangan Tambahan jika sedang muncul
-            let descArea = $('#desc_area_' + qid);
-            if (!descArea.hasClass('d-none')) {
-                let descInput = descArea.find('textarea');
-                if (descInput.attr('required') && $.trim(descInput.val()) === '') {
+            if (stepDiv.data('type') === 'utama1') {
+                let ans = $('input[name="utama1[' + cid + ']"]:checked').val();
+                if (!ans) {
                     isValid = false;
-                    errMsg = 'Mohon isi keterangan tambahan yang diminta.';
+                } else if (ans === 'Info') {
+                    isValid = false;
+                    errMsg = 'Opsi ini hanya untuk membaca penjelasan. Anda tetap harus memilih "Ya" atau "Tidak".';
+                }
+            } else if (stepDiv.data('type') === 'utama2') {
+                let ans = $('input[name="utama2[' + cid + ']"]:checked').val();
+                if (!ans) isValid = false;
+            } else if (stepDiv.data('type') === 'konfirmasi') {
+                let isChecked = $('#c' + cid + '_konfirmasi_check').is(':checked');
+                if (!isChecked) {
+                    isValid = false;
+                    errMsg = 'Anda harus mencentang kotak persetujuan untuk menyatakan bahwa jawaban di cabang ini sudah benar.';
+                }
+            } else if (stepId.includes('_dyn_')) {
+                let qid = stepDiv.data('qid');
+                let type = stepDiv.data('type');
+                let qData = pertanyaansData.find(p => p.id == qid);
+
+                if (type === 'select-description' || type === 'select-info' || type === 'select' || type === 'radio') {
+                    let checkedInput = $('input[name="jawaban[' + cid + '][' + qid + ']"]:checked');
+                    if (checkedInput.length === 0) {
+                        isValid = false;
+                    } else {
+                        // Cek jika ini select-info dan valuenya butuh penjelasan
+                        if (qData && type === 'select-info' && checkedInput.val() === qData.need_description_on) {
+                            isValid = false;
+                            errMsg = 'Opsi ini hanya untuk membaca penjelasan. Anda tetap harus memilih "Ya" atau "Tidak" untuk melanjutkan.';
+                        }
+                    }
+                } else if (type === 'multiselect' || type === 'multiselect-description') {
+                    if ($('input[name="jawaban[' + cid + '][' + qid + '][]"]:checked').length === 0) {
+                        isValid = false;
+                    }
+                } else if (type === 'essay' || type === 'text') {
+                    if ($.trim($('textarea[name="jawaban[' + cid + '][' + qid + ']"]').val()) === '') {
+                        isValid = false;
+                    }
+                }
+
+                // Keterangan Tambahan dinamis
+                let descArea = $('#desc_area_cabang_' + cid + '_' + qid);
+                let isAlways = false;
+                if (qData && qData.need_description_on === '*') isAlways = true;
+                if (qData && !qData.need_description_on && (type === 'select-description' || type === 'multiselect-description')) isAlways = true;
+
+                if (isAlways || !descArea.hasClass('d-none')) {
+                    let descInput = descArea.find('textarea');
+                    let isRequired = isAlways || descInput.attr('required');
+                    
+                    if (type === 'multiselect-description') {
+                        isRequired = false;
+                    }
+                    
+                    if (descInput.length > 0 && isRequired && $.trim(descInput.val()) === '') {
+                        isValid = false;
+                        errMsg = 'Mohon isi keterangan tambahan yang diminta.';
+                    }
                 }
             }
 
             if (!isValid) {
                 Swal.fire({
                     icon: 'warning',
-                    title: 'Jawaban Belum Lengkap',
+                    title: 'Perhatian!',
                     text: errMsg,
                     confirmButtonColor: '#0d6efd'
                 });
@@ -193,55 +497,222 @@
             return isValid;
         }
 
-        // Logika untuk Keterangan Tambahan
-        $('.check-input-trigger').on('change', function() {
-            let pertanyaans = @json($pertanyaans);
-            let qid = $(this).data('qid');
-            let q = pertanyaans.find(p => p.id == qid);
-            
-            if (q && q.need_description_on) {
-                let descArea = $('#desc_area_' + q.id);
-                let descInput = descArea.find('textarea');
-                let triggerValues = q.need_description_on.split(',').map(s => s.trim());
-                let showDesc = false;
+        // Aksi Tombol
+        $('#btnNext').on('click', function() {
+            let currentStepId = currentFlow[currentIndex];
+            if (validateStep(currentStepId)) {
+                buildFlow(); // pastikan rute di-rebuild
+                currentIndex++;
+                saveLocalState();
+                renderStep();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        });
 
-                // Menggunakan selector data-qid agar lebih aman dibanding mencari berdasarkan attribute name yang mengandung kurung siku
-                $('.check-input-trigger[data-qid="' + q.id + '"]:checked').each(function() {
-                    if (triggerValues.includes($(this).val())) {
-                        showDesc = true;
+        $('#btnPrev').on('click', function() {
+            if (currentIndex > minAllowedIndex) {
+                currentIndex--;
+                saveLocalState();
+                renderStep();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        });
+
+        // AJAX Save Cabang (Global Function)
+        window.saveCabang = function(cid) {
+            let currentStepId = currentFlow[currentIndex];
+            if (!validateStep(currentStepId)) {
+                return;
+            }
+
+            // Kumpulkan data yang berkaitan dengan cid ini saja
+            let formData = new FormData($('#formKuisioner')[0]);
+            let ajaxData = {
+                _token: formData.get('_token'),
+                cid: cid,
+                is_melakukan: $('#is_melakukan_' + cid).val(),
+                is_mengetahui: $('#is_mengetahui_' + cid).val(),
+                is_mengetahui2: $('#is_mengetahui2_' + cid).val(),
+                jawaban: {},
+                deskripsi: {}
+            };
+
+            // Parse jawaban dan deskripsi dari formData
+            for (let [key, value] of formData.entries()) {
+                // regex matching jawaban[cid][qid]
+                let matchAns = key.match(/^jawaban\[(\d+)\]\[(\d+)\](?:\[\])?$/);
+                if (matchAns && matchAns[1] == cid) {
+                    let qid = matchAns[2];
+                    if (key.endsWith('[]')) {
+                        if (!ajaxData.jawaban[qid]) ajaxData.jawaban[qid] = [];
+                        ajaxData.jawaban[qid].push(value);
+                    } else {
+                        ajaxData.jawaban[qid] = value;
                     }
-                });
-
-                if (showDesc) {
-                    descArea.removeClass('d-none').hide().fadeIn(300);
-                    descInput.attr('required', true);
-                } else {
-                    descArea.addClass('d-none');
-                    descInput.attr('required', false);
-                    descInput.val('');
+                }
+                // regex matching deskripsi[cid][qid]
+                let matchDesc = key.match(/^deskripsi\[(\d+)\]\[(\d+)\]$/);
+                if (matchDesc && matchDesc[1] == cid) {
+                    let qid = matchDesc[2];
+                    ajaxData.deskripsi[qid] = value;
                 }
             }
+
+            let btn = $('#btnSaveCabang_' + cid);
+            let btnOriginalHtml = btn.html();
+            btn.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Menyimpan...').prop('disabled', true);
+
+            $.ajax({
+                url: '{{ route('kuisioner.storeCabangJawaban') }}',
+                type: 'POST',
+                data: ajaxData,
+                success: function(response) {
+                    if (response.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: 'Jawaban untuk cabang ini telah disimpan.',
+                            timer: 1500,
+                            showConfirmButton: false
+                        }).then(() => {
+                            btn.html('<i class="bi bi-check-lg"></i> Tersimpan').removeClass('btn-success').addClass('btn-secondary');
+                            
+                            // Tambahkan cabang ke list completed
+                            completedCabangIds.push(cid);
+                            
+                            // Reset antrean dan mulai dari cabang pertama yang tersisa
+                            minAllowedIndex = 0;
+                            currentIndex = 0;
+                            sessionStorage.removeItem(stateKey);
+                            
+                            buildFlow();
+                            renderStep();
+                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                        });
+                    }
+                },
+                error: function(xhr) {
+                    btn.html(btnOriginalHtml).prop('disabled', false);
+                    Swal.fire('Terjadi Kesalahan', 'Gagal menyimpan data. Silakan coba lagi.', 'error');
+                }
+            });
+        };
+
+        // Deskripsi Dinamis (Bagian Kronologi & Info)
+        $('.check-input-trigger').on('change', function() {
+            let qid = $(this).data('qid');
+            let cid = $(this).data('cid');
+            let q = pertanyaansData.find(p => p.id == qid);
+            
+            if (q) {
+                let isAlways = false;
+                if (q.need_description_on === '*') isAlways = true;
+                if (!q.need_description_on && (q.type === 'select-description' || q.type === 'multiselect-description')) isAlways = true;
+                
+                if (isAlways) {
+                    return; // Selalu tampil, tidak perlu di-toggle
+                }
+
+                if (q.need_description_on) {
+                    let descArea = $('#desc_area_cabang_' + cid + '_' + q.id);
+                    let descInput = descArea.find('textarea');
+                    let triggerValues = q.need_description_on.split(',').map(s => s.trim());
+                    let showDesc = false;
+
+                    $('.check-input-trigger[data-qid="' + q.id + '"][data-cid="' + cid + '"]:checked').each(function() {
+                        if (triggerValues.includes($(this).val())) {
+                            showDesc = true;
+                        }
+                    });
+
+                    if (showDesc) {
+                        descArea.removeClass('d-none').hide().fadeIn(300);
+                        if(descInput.length) descInput.attr('required', true);
+                    } else {
+                        descArea.addClass('d-none');
+                        if(descInput.length) {
+                            descInput.attr('required', false);
+                            descInput.val('');
+                        }
+                    }
+                }
+            }
+            
+            // Rebuild flow in case it's a branching trigger
+            buildFlow();
         });
 
-        // Submit Akhir
+        // Submit Form
         $('#btnSubmitKuisioner').on('click', function() {
-            if (validateStep(currentStep)) {
+            let saran = $.trim($('#saran_perbaikan').val());
+            if (saran === '') {
                 Swal.fire({
-                    title: 'Selesai Mengisi?',
-                    text: "Pastikan semua jawaban sudah jujur dan benar.",
-                    icon: 'question',
-                    showCancelButton: true,
-                    confirmButtonColor: '#0d6efd',
-                    cancelButtonColor: '#6c757d',
-                    confirmButtonText: 'Ya, Submit <i class="bi bi-send ms-1"></i>',
-                    cancelButtonText: 'Periksa Lagi'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $('#formKuisioner').submit();
-                    }
+                    icon: 'warning',
+                    title: 'Isian Belum Lengkap',
+                    text: 'Mohon isi saran dan masukan Anda mengenai apa yang perlu diperbaiki oleh perusahaan sebelum menyelesaikan formulir.',
+                    confirmButtonColor: '#0d6efd'
                 });
+                return;
             }
+
+            Swal.fire({
+                title: 'Kirim Semua Jawaban?',
+                text: "Pastikan semua saran dan masukan sudah Anda isi dengan jujur dan benar.",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#0d6efd',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Ya, Kirim Sekarang <i class="bi bi-send ms-1"></i>',
+                cancelButtonText: 'Periksa Lagi'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $('#formKuisioner').attr('action', '{{ route('kuisioner.submitAll') }}');
+                    $('#formKuisioner').submit();
+                }
+            });
         });
+
+        // Simpan state saat ada inputan
+        $('#formKuisioner').on('change input', function() {
+            saveLocalState();
+        });
+
+        // Render Awal & Pemulihan State
+        let savedState = sessionStorage.getItem(stateKey);
+        if (savedState) {
+            try {
+                savedState = JSON.parse(savedState);
+                if (savedState.formData) {
+                    savedState.formData.forEach(item => {
+                        let $el = $('[name="' + item.name + '"]');
+                        if ($el.length) {
+                            if ($el.is(':radio') || $el.is(':checkbox')) {
+                                $el.filter('[value="' + item.value + '"]').prop('checked', true);
+                            } else {
+                                $el.val(item.value);
+                            }
+                        }
+                    });
+                }
+                
+                restoreDynamicUI();
+                buildFlow();
+                
+                if (savedState.currentIndex !== undefined) {
+                    currentIndex = savedState.currentIndex;
+                    if (currentIndex >= currentFlow.length) {
+                        currentIndex = Math.max(0, currentFlow.length - 1);
+                    }
+                }
+            } catch (e) {
+                console.error("Gagal memulihkan state dari session storage", e);
+                buildFlow();
+            }
+        } else {
+            buildFlow();
+        }
+        
+        renderStep();
     });
 </script>
 @endpush
