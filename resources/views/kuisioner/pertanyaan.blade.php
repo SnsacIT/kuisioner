@@ -164,7 +164,7 @@
                                                         <div class="mt-1 text-dark" style="white-space: pre-wrap;">{{ $q->desciption_hint }}</div>
                                                     </div>
                                                 @else
-                                                    <label class="form-label text-muted small fw-bold"><i class="bi bi-info-circle me-1"></i>Keterangan Tambahan</label>
+                                                    <label class="form-label text-muted small fw-bold"><i class="bi bi-info-circle me-1"></i>Keterangan Tambahan {{ $q->type === 'multiselect-description' ? '(Opsional)' : '' }}</label>
                                                     <textarea class="form-control" name="deskripsi[{{ $cabang->id }}][{{ $q->id }}]" rows="2" placeholder="{{ $q->desciption_hint }}"></textarea>
                                                 @endif
                                             </div>
@@ -254,16 +254,58 @@
         const mengetahui1Ids = pertanyaansData.filter(p => p.category === 'mengetahui1').map(p => p.id);
         const mengetahui2Ids = pertanyaansData.filter(p => p.category === 'mengetahui2').map(p => p.id);
         
+        let completedCabangIds = cabangsData.filter(c => c.jawaban !== null).map(c => c.id);
+        
         let currentFlow = [];
         let currentIndex = 0;
         let minAllowedIndex = 0; // Kunci supaya tidak bisa kembali melewati cabang yang sudah di-save
+        
+        const stateKey = 'kuisioner_state_{{ session('current_kuisioner_id') }}';
 
-        // Fungsi Rebuild Flow Path Linier Multicabang
+        function saveLocalState() {
+            let state = {
+                currentIndex: currentIndex,
+                formData: $('#formKuisioner').serializeArray()
+            };
+            sessionStorage.setItem(stateKey, JSON.stringify(state));
+        }
+
+        function restoreDynamicUI() {
+            $('.trigger-utama1:checked').each(function() {
+                let cid = $(this).data('cid');
+                if ($(this).val() === 'Info') {
+                    $('#desc_area_cabang_' + cid + '_utama1').removeClass('d-none').show();
+                }
+            });
+            
+            $('.check-input-trigger:checked').each(function() {
+                let qid = $(this).data('qid');
+                let cid = $(this).data('cid');
+                let q = pertanyaansData.find(p => p.id == qid);
+                if (q && q.need_description_on) {
+                    let descArea = $('#desc_area_cabang_' + cid + '_' + q.id);
+                    let triggerValues = q.need_description_on.split(',').map(s => s.trim());
+                    if (triggerValues.includes($(this).val())) {
+                        descArea.removeClass('d-none').show();
+                        let descInput = descArea.find('textarea');
+                        if (descInput.length && q.type !== 'multiselect-description') {
+                            descInput.attr('required', true);
+                        }
+                    }
+                }
+            });
+        }
         function buildFlow() {
             let newFlow = [];
             
             cabangsData.forEach(c => {
                 let cid = c.id;
+                
+                // SKIP jika cabang ini sudah selesai (sudah ada jawaban di database)
+                if (completedCabangIds.includes(cid)) {
+                    return;
+                }
+                
                 newFlow.push('cabang_' + cid + '_utama1');
                 
                 let ans1 = $('input[name="utama1[' + cid + ']"]:checked').val();
@@ -432,6 +474,10 @@
                     let descInput = descArea.find('textarea');
                     let isRequired = isAlways || descInput.attr('required');
                     
+                    if (type === 'multiselect-description') {
+                        isRequired = false;
+                    }
+                    
                     if (descInput.length > 0 && isRequired && $.trim(descInput.val()) === '') {
                         isValid = false;
                         errMsg = 'Mohon isi keterangan tambahan yang diminta.';
@@ -457,6 +503,7 @@
             if (validateStep(currentStepId)) {
                 buildFlow(); // pastikan rute di-rebuild
                 currentIndex++;
+                saveLocalState();
                 renderStep();
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
@@ -465,6 +512,7 @@
         $('#btnPrev').on('click', function() {
             if (currentIndex > minAllowedIndex) {
                 currentIndex--;
+                saveLocalState();
                 renderStep();
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
@@ -529,12 +577,15 @@
                         }).then(() => {
                             btn.html('<i class="bi bi-check-lg"></i> Tersimpan').removeClass('btn-success').addClass('btn-secondary');
                             
-                            // Kunci agar tidak bisa mundur
-                            minAllowedIndex = currentIndex + 1;
+                            // Tambahkan cabang ke list completed
+                            completedCabangIds.push(cid);
                             
-                            // Lanjut otomatis ke langkah berikutnya
+                            // Reset antrean dan mulai dari cabang pertama yang tersisa
+                            minAllowedIndex = 0;
+                            currentIndex = 0;
+                            sessionStorage.removeItem(stateKey);
+                            
                             buildFlow();
-                            currentIndex++;
                             renderStep();
                             window.scrollTo({ top: 0, behavior: 'smooth' });
                         });
@@ -621,7 +672,46 @@
             });
         });
 
-        // Render Awal
+        // Simpan state saat ada inputan
+        $('#formKuisioner').on('change input', function() {
+            saveLocalState();
+        });
+
+        // Render Awal & Pemulihan State
+        let savedState = sessionStorage.getItem(stateKey);
+        if (savedState) {
+            try {
+                savedState = JSON.parse(savedState);
+                if (savedState.formData) {
+                    savedState.formData.forEach(item => {
+                        let $el = $('[name="' + item.name + '"]');
+                        if ($el.length) {
+                            if ($el.is(':radio') || $el.is(':checkbox')) {
+                                $el.filter('[value="' + item.value + '"]').prop('checked', true);
+                            } else {
+                                $el.val(item.value);
+                            }
+                        }
+                    });
+                }
+                
+                restoreDynamicUI();
+                buildFlow();
+                
+                if (savedState.currentIndex !== undefined) {
+                    currentIndex = savedState.currentIndex;
+                    if (currentIndex >= currentFlow.length) {
+                        currentIndex = Math.max(0, currentFlow.length - 1);
+                    }
+                }
+            } catch (e) {
+                console.error("Gagal memulihkan state dari session storage", e);
+                buildFlow();
+            }
+        } else {
+            buildFlow();
+        }
+        
         renderStep();
     });
 </script>

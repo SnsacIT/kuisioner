@@ -19,7 +19,7 @@ return new class extends Migration
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
             $table->string('mess')->nullable();
-            $table->json('mekanik')->nullable(); // Untuk menyimpan array of string
+            $table->string('mekanik')->nullable();
             $table->string('atl')->nullable();
             $table->timestamps();
         });
