@@ -36,4 +36,9 @@ class KuisionerCabang extends Model
     {
         return $this->hasOne(KuisionerJawaban::class, 'kuisioner_cabang_id');
     }
+
+    public function dealerCabang()
+    {
+        return $this->belongsTo(DealerCabang::class, 'dealercabang_id');
+    }
 }

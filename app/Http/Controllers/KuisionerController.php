@@ -131,14 +131,74 @@ class KuisionerController extends Controller
             return redirect()->route('rules.index')->with('error', 'Sesi Anda telah kedaluwarsa atau tidak valid. Silakan mulai ulang.');
         }
 
-        $hasCabang = \App\Models\KuisionerCabang::where('kuisioner_id', session('current_kuisioner_id'))->exists();
-        if (!$hasCabang) {
+        $kuisionerCabangs = \App\Models\KuisionerCabang::with('dealerCabang')->where('kuisioner_id', session('current_kuisioner_id'))->get();
+        if ($kuisionerCabangs->isEmpty()) {
             return redirect()->route('kuisioner.index')->with('error', 'Silakan isi data cabang terlebih dahulu sebelum melanjutkan ke pertanyaan.');
         }
 
-        // Ambil semua pertanyaan dari database (dummy)
+        // Ambil semua pertanyaan dari database
         $pertanyaans = \App\Models\Pertanyaan::all();
 
-        return view('kuisioner.pertanyaan', compact('pertanyaans'));
+        return view('kuisioner.pertanyaan', compact('pertanyaans', 'kuisionerCabangs'));
+    }
+
+    public function storeCabangJawaban(Request $request)
+    {
+        $kuisionerId = session('current_kuisioner_id');
+        if (!$kuisionerId) {
+            return response()->json(['success' => false, 'message' => 'Sesi kedaluwarsa.'], 403);
+        }
+
+        $cid = $request->cid;
+        $cabang = \App\Models\KuisionerCabang::where('id', $cid)->where('kuisioner_id', $kuisionerId)->first();
+        if (!$cabang) {
+            return response()->json(['success' => false, 'message' => 'Cabang tidak valid.'], 404);
+        }
+
+        // Simpan KuisionerJawaban
+        $jawabanParent = \App\Models\KuisionerJawaban::updateOrCreate(
+            ['kuisioner_cabang_id' => $cid],
+            [
+                'is_melakukan' => $request->is_melakukan === '1' ? true : false,
+                'is_mengetahui' => $request->is_mengetahui === '1' ? true : ($request->is_mengetahui === '0' ? false : null),
+                'is_mengetahui2' => $request->is_mengetahui2 === '1' ? true : ($request->is_mengetahui2 === '0' ? false : null),
+            ]
+        );
+
+        // Hapus item lama jika update
+        \App\Models\KuisionerJawabanItem::where('jawaban_id', $jawabanParent->id)->delete();
+
+        if ($request->has('jawaban') && is_array($request->jawaban)) {
+            foreach ($request->jawaban as $qId => $ans) {
+                $ansVal = is_array($ans) ? json_encode($ans) : $ans;
+                $descVal = $request->deskripsi[$qId] ?? null;
+
+                \App\Models\KuisionerJawabanItem::create([
+                    'jawaban_id' => $jawabanParent->id,
+                    'pertanyaan_id' => $qId,
+                    'jawaban' => $ansVal,
+                    'description' => $descVal,
+                ]);
+            }
+        }
+
+        return response()->json(['success' => true]);
+    }
+
+    public function submitAll(Request $request)
+    {
+        $kuisionerId = session('current_kuisioner_id');
+        if ($kuisionerId) {
+            $kuisioner = \App\Models\Kuisioner::find($kuisionerId);
+            if ($kuisioner) {
+                $kuisioner->update([
+                    'saran_perbaikan' => $request->saran_perbaikan,
+                ]);
+            }
+            // Tandai selesai, misal hapus session
+            session()->forget('current_kuisioner_id');
+        }
+
+        return redirect()->route('rules.index')->with('success', 'Terima kasih. Seluruh informasi dan pernyataan Anda telah tersimpan. Informasi tersebut akan dijaga kerahasiaannya dan digunakan untuk proses verifikasi, pemeriksaan, serta perbaikan internal sesuai ketentuan yang berlaku.');
     }
 }

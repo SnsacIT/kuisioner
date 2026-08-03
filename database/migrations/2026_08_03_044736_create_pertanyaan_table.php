@@ -15,9 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('category');
             $table->string('type');
-            $table->string('list_jawaban');
-            $table->string('need_description_on');
-            $table->string('desciption_hint');
+            $table->text('list_jawaban')->nullable();
+            $table->text('need_description_on')->nullable();
+            $table->text('desciption_hint')->nullable();
             $table->text('pertanyaan'); // menggunakan text agar bisa menampung pertanyaan yang panjang
             $table->timestamps();
         });
