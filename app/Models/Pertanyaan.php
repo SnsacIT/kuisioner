@@ -13,7 +13,11 @@ class Pertanyaan extends Model
 
     protected $fillable = [
         'category',
-        'pertanyaan',
+        'type',
+        'list_jawaban',
+        'need_description_on',
+        'desciption_hint',
+        'pertanyaan'
     ];
 
     public function jawabanItems()

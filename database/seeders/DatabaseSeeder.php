@@ -23,5 +23,11 @@ class DatabaseSeeder extends Seeder
                 'database/migrations/2026_08_03_045041_create_kuisioner_jawaban_item_table.php'
             ]
         ]);
+
+        $this->call([
+            RoleSeeder::class,
+            UserSeeder::class,
+            DealerCabangSeeder::class,
+        ]);
     }
 }

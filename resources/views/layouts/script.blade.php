@@ -6,6 +6,7 @@
   <script src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.11.0/browser/overlayscrollbars.browser.es6.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   {{-- 3. DataTables Dependencies (Order Matters: Core -> Libs -> Buttons) --}}
   <script src="https://cdn.datatables.net/2.1.8/js/dataTables.min.js"></script>
@@ -299,12 +300,14 @@
 
         // 2. Cegat Tombol Print Screen & Copy
         document.addEventListener('keyup', (e) => {
-            if (e.key === 'PrintScreen') {
-                navigator.clipboard.writeText(''); 
+            if (e.key === 'PrintScreen' || e.keyCode === 44) {
+                try {
+                    navigator.clipboard.writeText(''); 
+                } catch (err) {}
                 Swal.fire({
                     icon: 'warning',
                     title: 'Dilarang Screenshot!',
-                    text: 'Mengambil screenshot pada halaman ini tidak diperbolehkan.',
+                    text: 'Sistem mendeteksi upaya screenshot.',
                     confirmButtonColor: '#d33'
                 });
             }
@@ -323,19 +326,22 @@
             }
         });
 
-        // 3. Efek Layar Hitam (Blur) saat kehilangan fokus (Snipping Tool / Ganti Aplikasi)
-        window.addEventListener('blur', function() {
+        // 3. Efek Layar Hitam (Blur) saat kehilangan fokus atau kursor keluar (Snipping Tool)
+        const hideScreen = function() {
             document.body.style.filter = "blur(15px)";
             document.body.style.opacity = "0.05";
-            document.body.style.transition = "all 0.1s ease";
-        });
-        
-        window.addEventListener('focus', function() {
+        };
+        const showScreen = function() {
             document.body.style.filter = "none";
             document.body.style.opacity = "1";
-        });
+        };
 
-        // 4. Mencegah seleksi teks (CSS Inline Injector)
+        window.addEventListener('blur', hideScreen);
+        window.addEventListener('focus', showScreen);
+        document.addEventListener('mouseleave', hideScreen);
+        document.addEventListener('mouseenter', showScreen);
+
+        // 4. Mencegah seleksi teks dan CSS Print
         let style = document.createElement('style');
         style.innerHTML = `
             body {
@@ -343,6 +349,11 @@
                 -moz-user-select: none;
                 -ms-user-select: none;
                 user-select: none;
+            }
+            @media print {
+                html, body {
+                    display: none !important;
+                }
             }
         `;
         document.head.appendChild(style);

@@ -133,9 +133,12 @@ class KuisionerController extends Controller
 
         $hasCabang = \App\Models\KuisionerCabang::where('kuisioner_id', session('current_kuisioner_id'))->exists();
         if (!$hasCabang) {
-            return redirect()->route('kuisioner.index')->with('error', 'Silakan isi data cabang terlebih dahulu.');
+            return redirect()->route('kuisioner.index')->with('error', 'Silakan isi data cabang terlebih dahulu sebelum melanjutkan ke pertanyaan.');
         }
 
-        return view('kuisioner.pertanyaan');
+        // Ambil semua pertanyaan dari database (dummy)
+        $pertanyaans = \App\Models\Pertanyaan::all();
+
+        return view('kuisioner.pertanyaan', compact('pertanyaans'));
     }
 }
