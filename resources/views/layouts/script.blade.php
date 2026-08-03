@@ -326,7 +326,8 @@
             }
         });
 
-        // 3. Efek Layar Hitam (Blur) saat kehilangan fokus atau kursor keluar (Snipping Tool)
+        // 3. Efek Layar Hitam (Blur) saat kehilangan fokus atau kursor keluar (Snipping Tool) - DINONAKTIFKAN SEMENTARA
+        /*
         const hideScreen = function() {
             document.body.style.filter = "blur(15px)";
             document.body.style.opacity = "0.05";
@@ -340,6 +341,7 @@
         window.addEventListener('focus', showScreen);
         document.addEventListener('mouseleave', hideScreen);
         document.addEventListener('mouseenter', showScreen);
+        */
 
         // 4. Mencegah seleksi teks dan CSS Print
         let style = document.createElement('style');
