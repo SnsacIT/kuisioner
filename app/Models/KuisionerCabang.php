@@ -12,6 +12,7 @@ class KuisionerCabang extends Model
     protected $table = 'kuisioner_cabang';
 
     protected $fillable = [
+        'category',
         'kuisioner_id',
         'dealercabang_id',
         'start_date',

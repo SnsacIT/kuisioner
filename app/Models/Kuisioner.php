@@ -15,6 +15,8 @@ class Kuisioner extends Model
         'nip',
         'date',
         'confirm_statement',
+        'confirm_cabang',
+        'confirm_cabang2',
         'is_bersalah',
         'signature',
         'saran_perbaikan',
