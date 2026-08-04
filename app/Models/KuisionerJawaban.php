@@ -15,11 +15,14 @@ class KuisionerJawaban extends Model
         'kuisioner_cabang_id',
         'is_melakukan',
         'is_mengetahui',
+        'is_mengetahui2',
+
     ];
 
     protected $casts = [
         'is_melakukan' => 'boolean',
         'is_mengetahui' => 'boolean',
+        'is_mengetahui2' => 'boolean',
     ];
 
     public function kuisionerCabang()
