@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Kuisioner;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class KuisionerController extends Controller
 {
@@ -22,7 +23,7 @@ class KuisionerController extends Controller
         ]);
 
         $nip = Auth::user()->nip;
-        
+
         // Mengambil format tanggal dari input periode
         $periodeDate = $request->periode;
 
@@ -61,7 +62,7 @@ class KuisionerController extends Controller
 
         // Mengambil daftar cabang dari database
         $cabangs = \App\Models\DealerCabang::select('id', 'dealer', 'cabang','nama_dealer')->whereNull('kode_kas')->orWhere('kode_kas','like','70%')->orderBy('dealer')->get();
-        
+
         // Mengambil daftar user (untuk mekanik & atl)
         $users = \App\Models\User::select('id', 'nip', 'nama')->whereNotNull('nip')->whereNull('delete_at')->whereNotNull('nama')->orderBy('nama')->get();
 
@@ -123,7 +124,7 @@ class KuisionerController extends Controller
 
         $cabangs = \App\Models\DealerCabang::select('id', 'dealer', 'cabang','nama_dealer')->whereNull('kode_kas')->orWhere('kode_kas','like','70%')->orderBy('dealer')->get();
         $users = \App\Models\User::select('id', 'nip', 'nama')->whereNotNull('nip')->whereNull('delete_at')->whereNotNull('nama')->orderBy('nama')->get();
-        
+
         $currentCabang = \App\Models\KuisionerCabang::with('dealerCabang')
                             ->where('kuisioner_id', $kuisionerId)
                             ->whereNull('end_date')
@@ -259,4 +260,39 @@ class KuisionerController extends Controller
 
         return redirect()->route('rules.index')->with('success', 'Terima kasih. Seluruh informasi dan pernyataan Anda telah tersimpan. Informasi tersebut akan dijaga kerahasiaannya dan digunakan untuk proses verifikasi, pemeriksaan, serta perbaikan internal sesuai ketentuan yang berlaku.');
     }
+
+    public function getData(){
+        $columns = DB::table('pertanyaan')
+            ->orderBy('id')
+            ->get()
+            ->map(function ($q) {
+                return DB::raw("
+                    MAX(
+                        CASE
+                            WHEN p.id = {$q->id}
+                            THEN kji.jawaban
+                        END
+                    ) AS `{$q->category}_{$q->id}`");
+            })
+            ->toArray();
+
+        $data = DB::table('kuisioner_cabang as kc')
+            ->leftJoin('kuisioner_jawaban as kj', 'kj.kuisioner_cabang_id', '=', 'kc.id')
+            ->leftJoin('kuisioner_jawaban_item as kji', 'kji.jawaban_id', '=', 'kj.id')
+            ->leftJoin('pertanyaan as p', 'p.id', '=', 'kji.pertanyaan_id')
+            ->select(array_merge([
+                'kc.id',
+                'kc.kuisioner_id',
+                'kc.dealercabang_id',
+            ], $columns))
+            ->groupBy(
+                'kc.id',
+                'kc.kuisioner_id',
+                'kc.dealercabang_id'
+            )
+            ->toSql();
+
+        return response()->json($data);
+    }
+
 }
