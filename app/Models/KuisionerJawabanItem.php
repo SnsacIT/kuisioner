@@ -15,6 +15,7 @@ class KuisionerJawabanItem extends Model
         'jawaban_id',
         'pertanyaan_id',
         'jawaban',
+        'description',
     ];
 
     public function kuisionerJawaban()
