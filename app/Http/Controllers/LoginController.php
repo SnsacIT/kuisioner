@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class LoginController extends Controller
 {
@@ -25,7 +27,15 @@ class LoginController extends Controller
 
         $remember = $request->has('remember');
 
-        if (!in_array($request->input('nip'), [
+        $user = User::where('nip', $request->input('nip'))->first();
+
+        $checkCabang = DB::table('dealercabang')
+            ->where('dealer', $user->dealer)
+            ->where('cabang', $user->cabang)
+            ->where('area', 'JAWA BARAT')
+            ->first();
+
+        if (!(in_array($request->input('nip'), [
             // '1908120041',
             // '2105260122',
             // '1908120042',
@@ -190,7 +200,7 @@ class LoginController extends Controller
             '2504931056',
             '0126031310',
             '2307630518'
-        ])) {
+        ]) || !$checkCabang)) {
             return back()->withErrors([
                 'nip' => 'Anda tidak memiliki akses.',
             ]);
