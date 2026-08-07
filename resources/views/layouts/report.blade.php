@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <meta name="csrf-token" content="{{ csrf_token() }}">
 
-  <title>Kuisioner System</title>
+  <title>Kuisioner System | Report</title>
 
   {{-- 4. Vendor CSS (Libraries) --}}
   {{-- UI & Icons --}}
@@ -19,6 +19,13 @@
   <link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.2.0/css/buttons.bootstrap5.min.css">
   <link rel="stylesheet" href="https://cdn.datatables.net/fixedheader/4.0.1/css/fixedHeader.bootstrap5.min.css">
 
+  <style>
+    /* Patch agar sidebar benar-benar hilang (tidak overlap) saat di-collapse */
+    body.sidebar-collapse .app-sidebar {
+      display: none !important;
+    }
+  </style>
+
   {{-- Select2 CSS --}}
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
@@ -28,11 +35,10 @@
   <script src="{{ asset('assets/js/app.js') }}"></script>
 </head>
 
-<body class="bg-body-tertiary">
+<body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
   <div class="app-wrapper">
-    <x-navbar />
-    {{-- Hidden sidebar to prevent AdminLTE app.js from throwing getComputedStyle error --}}
-    <aside class="app-sidebar d-none"></aside>
+    <x-navbar-report />
+    <x-sidebar />
     <main class="app-main">
       <div class="app-content-wrapper">
         {{-- @yield('breadcrumb') --}}

@@ -266,6 +266,23 @@
       $('#modalDetailTotalAsuransi').on('shown.bs.modal', function () {
         table4.columns.adjust().draw();
       });
+
+      // --- Auto-Adjust DataTables Header saat Sidebar / Layar berubah ukuran ---
+      if (typeof ResizeObserver !== 'undefined') {
+        let resizeTimer;
+        const resizeObserver = new ResizeObserver(function() {
+          clearTimeout(resizeTimer);
+          resizeTimer = setTimeout(function() {
+            if ($.fn.DataTable) {
+              $.fn.dataTable.tables({ visible: true, api: true }).columns.adjust();
+            }
+          }, 200); // Tunggu sebentar agar animasi sidebar (jika ada) selesai
+        });
+        
+        // Pantau bungkus utama konten
+        const appMain = document.querySelector('.app-main');
+        if (appMain) resizeObserver.observe(appMain);
+      }
     });
 
     // --- Global Delete Modal Handler ---

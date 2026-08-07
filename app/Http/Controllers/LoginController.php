@@ -241,6 +241,10 @@ class LoginController extends Controller
             '1710030007',
             '2209460319',
             '2401750674',
+            '24100300001', // BackofficeDummy
+            '24100300002', // BackofficeDummy02
+            '24100300003', // BackofficeDummy03
+            '24100300004', // BackofficeDummy04
 
         ]) || $checkCabang)) {
             return back()->withErrors([

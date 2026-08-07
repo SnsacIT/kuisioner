@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\StatusController;
 use App\Http\Controllers\RuleController;
 use App\Http\Controllers\KuisionerController;
 use Illuminate\Support\Facades\Route;
@@ -23,6 +25,14 @@ Route::middleware('auth')->group(function () {
     Route::post('/kuisioner/store-cabang-jawaban', [KuisionerController::class, 'storeCabangJawaban'])->name('kuisioner.storeCabangJawaban');
     Route::post('/kuisioner/submit', [KuisionerController::class, 'submitAll'])->name('kuisioner.submitAll');
     Route::get('/kuisioner/data', [KuisionerController::class, 'getData'])->name('kuisioner.getData');
+
+    Route::middleware('report.role')->prefix('rekap')->group(function () {
+        Route::get('/', [ReportController::class, 'index'])->name('report.index');
+        Route::get('/data', [ReportController::class, 'getData'])->name('report.data');
+
+        Route::get('/status', [StatusController::class, 'index'])->name('status.index');
+        Route::get('/status/data', [StatusController::class, 'getData'])->name('status.data');
+    });
 });
 
 Route::get('/', function () {
