@@ -29,13 +29,13 @@ class LoginController extends Controller
 
         $user = User::where('nip', $request->input('nip'))->first();
 
-        $checkCabang = false;
+        // $checkCabang = false;
 
-        // $checkCabang = DB::table('dealercabang')
-        //     ->where('dealer', $user->dealer)
-        //     ->where('cabang', $user->cabang)
-        //     ->where('area', 'JAWA BARAT')
-        //     ->first();
+        $checkCabang = DB::table('dealercabang')
+            ->where('dealer', $user->dealer)
+            ->where('cabang', $user->cabang)
+            ->where('area', 'JAWA BARAT')
+            ->first();
 
         if (!(in_array($request->input('nip'), [
             // '1908120041',
@@ -251,6 +251,7 @@ class LoginController extends Controller
             '2401760691',
             '2307650534',
             '2109280137', //Wahyu SOH
+            '2402770728', //Agus Kuncoro
 
         ]) || $checkCabang)) {
             return back()->withErrors([
