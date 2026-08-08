@@ -29,11 +29,13 @@ class LoginController extends Controller
 
         $user = User::where('nip', $request->input('nip'))->first();
 
-        $checkCabang = DB::table('dealercabang')
-            ->where('dealer', $user->dealer)
-            ->where('cabang', $user->cabang)
-            ->where('area', 'JAWA BARAT')
-            ->first();
+        $checkCabang = false;
+
+        // $checkCabang = DB::table('dealercabang')
+        //     ->where('dealer', $user->dealer)
+        //     ->where('cabang', $user->cabang)
+        //     ->where('area', 'JAWA BARAT')
+        //     ->first();
 
         if (!(in_array($request->input('nip'), [
             // '1908120041',
