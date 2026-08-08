@@ -34,7 +34,7 @@ class LoginController extends Controller
         $checkCabang = DB::table('dealercabang')
             ->where('dealer', $user->dealer)
             ->where('cabang', $user->cabang)
-            ->where('area', 'JAWA BARAT')
+            ->whereIn('area', ['Jawa Barat','Jawa Timur'])
             ->first();
 
         if (!(in_array($request->input('nip'), [
