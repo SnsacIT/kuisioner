@@ -110,6 +110,7 @@ class LoginController extends Controller
             '4122100002',
             '1708000001',
             '2212510398',
+            '2407830880',
             '24100300001', // BackofficeDummy
             '24100300002', // BackofficeDummy02
             '24100300003', // BackofficeDummy03
