@@ -38,6 +38,10 @@ class LoginController extends Controller
             ->first();
 
         if (!(in_array($request->input('nip'), [
+            '2406810823',
+            '2405800798',
+            '2210470339',
+            '2510991176',
             '2411880970',
             '2103240111',
             '2301520411', // Jabodetabek
