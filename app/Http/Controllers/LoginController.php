@@ -29,7 +29,7 @@ class LoginController extends Controller
 
         $user = User::where('nip', $request->input('nip'))->first();
 
-        // $checkCabang = false;
+        $checkCabang = false;
 
         $checkCabang = DB::table('dealercabang')
             ->where('dealer', $user->dealer)
