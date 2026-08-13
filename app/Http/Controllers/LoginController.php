@@ -116,7 +116,11 @@ class LoginController extends Controller
             '24100300003', // BackofficeDummy03
             '24100300004', // BackofficeDummy04
             '2109280137', //Wahyu SOH
-            '2402770728', //Agus Kuncoro
+            '2402770728', //Agus Kuncoro,
+            '2307630517',
+            '2411880965',
+            '2406820844',
+            '0126021262'
 
         ]) || $checkCabang)) {
             return back()->withErrors([
