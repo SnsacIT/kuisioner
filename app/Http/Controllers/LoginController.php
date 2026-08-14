@@ -27,15 +27,15 @@ class LoginController extends Controller
 
         $remember = $request->has('remember');
 
-        $user = User::where('nip', $request->input('nip'))->first();
+        // $user = User::where('nip', $request->input('nip'))->first();
 
         $checkCabang = false;
 
-        $checkCabang = DB::table('dealercabang')
-            ->where('dealer', $user->dealer)
-            ->where('cabang', $user->cabang)
-            ->whereIn('area', ['Jawa Barat', 'Jawa Timur'])
-            ->first();
+        // $checkCabang = DB::table('dealercabang')
+        //     ->where('dealer', $user->dealer)
+        //     ->where('cabang', $user->cabang)
+        //     ->whereIn('area', ['Jawa Barat', 'Jawa Timur'])
+        //     ->first();
 
         if (!(in_array($request->input('nip'), [
             '2406810823',
