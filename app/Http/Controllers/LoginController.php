@@ -38,7 +38,7 @@ class LoginController extends Controller
         //     ->first();
 
         if (!(in_array($request->input('nip'), [
-            '2401760681', //
+            '2401760681', // Sumatera
             '2212520406',
             '2408850905',
             '2505941074',
@@ -174,6 +174,7 @@ class LoginController extends Controller
             '24100300004', // BackofficeDummy04
             '2109280137', //Wahyu SOH
             '2402770728', //Agus Kuncoro,
+            '1708010004', // Reta SOH
             '2307630517',
             '2411880965',
             '2406820844',
