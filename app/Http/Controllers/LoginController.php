@@ -149,7 +149,8 @@ class LoginController extends Controller
             '2312260649',
             '2311730628',
             '2406810822',
-            '2501900995'
+            '2501900995',
+            '2410870948 '
 
         ]) || $checkCabang)) {
             return back()->withErrors([
