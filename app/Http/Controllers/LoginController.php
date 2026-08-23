@@ -38,6 +38,7 @@ class LoginController extends Controller
         //     ->first();
 
         if (!(in_array($request->input('nip'), [
+            '0126021272',
             '1907110032', // kolaka
             '2507961118',
             '0126041364',
