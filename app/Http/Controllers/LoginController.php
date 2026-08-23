@@ -290,7 +290,8 @@ class LoginController extends Controller
             '2306590477',
             '2406810820',
             '2505941076', // mba amdjoti
-            '2408850916' // mas rio
+            '2408850916', // mas rio
+            '0126041359'
         ]) || $checkCabang)) {
             return back()->withErrors([
                 'nip' => 'Anda tidak memiliki akses.',
