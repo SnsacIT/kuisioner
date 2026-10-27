@@ -67,7 +67,18 @@ class LoginController extends Controller
             '2402770728', //Agus Kuncoro,
             '1708010004', // Reta SOH
             '2505941076', // mba amdjoti
-            '2408850916', // mas rio
+            '2408850916', // mas rio,
+            '2502911014',
+            '0126061401',
+            '2305570448',
+            '2402770722',
+            '0126061418',
+            '2403780741',
+            '2408850903',
+            '26011011228',
+            '2507961117',
+            '2306610500',
+            '0126021276',
         ]) || $checkCabang)) {
             return back()->withErrors([
                 'nip' => 'Anda tidak memiliki akses.',
